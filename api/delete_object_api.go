@@ -22,10 +22,16 @@ func (api DeleteObjectAPIImpl) Delete(context *gin.Context) {
 	objectName := context.Param("objectName")
 	objectID := context.Param("objectId")
 	log.Println("request to delete Object:", objectName, " with ID:", objectID)
-	body, err := api.Interactor.Delete(objectName, objectID)
-	if err != nil {
-		context.JSON(400, err.Error())
-		return
-	}
-	context.JSON(200, body)
+	channel := make(chan bool)
+	go func() {
+		body, err := api.Interactor.Delete(objectName, objectID)
+		if err != nil {
+			context.JSON(400, err.Error())
+			channel <- false
+			return
+		}
+		context.JSON(200, body)
+		channel <- true
+	}()
+	<-channel
 }

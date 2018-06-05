@@ -28,12 +28,18 @@ func (api UpdateObjectAPIImpl) Update(context *gin.Context) {
 		context.JSON(400, err.Error())
 		return
 	}
-	var instance interface{}
-	json.Unmarshal(bytes, &instance)
-	body, err := api.Interactor.Update(objectName, objectID, &instance)
-	if err != nil {
-		context.JSON(400, err.Error())
-		return
-	}
-	context.JSON(200, body)
+	channel := make(chan bool)
+	go func() {
+		var instance interface{}
+		json.Unmarshal(bytes, &instance)
+		body, err := api.Interactor.Update(objectName, objectID, &instance)
+		if err != nil {
+			context.JSON(400, err.Error())
+			channel <- false
+			return
+		}
+		context.JSON(200, body)
+		channel <- true
+	}()
+	<-channel
 }

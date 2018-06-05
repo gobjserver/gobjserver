@@ -11,8 +11,8 @@ ObjServer is the server that store any objects in effective way.
 ## Features
 - REST API and Swagger UI
 - Middlewares (cors, gzip and static)
-- CI with Travis
-- Docker Build
+- RethinkDB
+- Docker Build and CI with Travis
 
 ## Installation
 
