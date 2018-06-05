@@ -1,0 +1,27 @@
+version: '3'
+services:
+    service-rethinkdb:
+        image: rethinkdb
+        ports:
+            - 8080
+            - 28015
+        command: rethinkdb --bind all
+    service-gobjserver:
+        image: gobjserver/gobjserver
+        depends_on:
+            - service-rethinkdb
+        environment:
+            GBP_RETHINK_HOST: service-rethinkdb:28015
+            GBP_DB_NAME: objectdb
+        ports:
+            - 9000:9000
+    service-nginx:
+        image: nginx:alpine
+        depends_on:
+            - service-rethinkdb
+        volumes:
+            - ./security/.rethinkdb.pass:/etc/nginx/.rethinkdb.pass
+            - ./security/nginx.conf:/etc/nginx/nginx.conf:ro
+        command: [nginx-debug, '-g', 'daemon off;']            
+        ports:
+            - 8000:80

@@ -4,8 +4,13 @@ import (
 	"os"
 )
 
-// DatabaseType .
-var DatabaseType = "rethink"
+var (
+	// RethinkHostAddress .
+	RethinkHostAddress = ":28015"
+
+	// DatabaseName .
+	DatabaseName = "objectdb"
+)
 
 // LoadVariables gets environment variables: enableProdMode and serverHost.
 func LoadVariables() (bool, string) {
@@ -22,9 +27,14 @@ func LoadVariables() (bool, string) {
 		serverHost = host
 	}
 
-	dbType := os.Getenv("GBP_HOST")
-	if len(dbType) > 0 {
-		DatabaseType = dbType
+	rethinkHost := os.Getenv("GBP_RETHINK_HOST")
+	if len(rethinkHost) > 0 {
+		RethinkHostAddress = rethinkHost
+	}
+
+	dbName := os.Getenv("GBP_DB_NAME")
+	if len(rethinkHost) > 0 {
+		DatabaseName = dbName
 	}
 
 	return enableProdMode, serverHost

@@ -72,6 +72,12 @@ bash script/BuildMulti.sh
 ```bash
     # enable production mode, default is false
     env GBP_PROMODE=true
+
+    # choose RethinkDB host, default is :28015
+    env GBP_RETHINK_HOST=rethinkdbhost:28015
+
+    # choose database name, default is objectdb
+    env GBP_DB_NAME=dbname
 ```
 ## Docker support 
 
@@ -85,6 +91,13 @@ Run docker container
 
 ```
 docker run -d --name gobjserver -p 9000:9000 gobjserver/gobjserver
+```
+
+Run docker-compose
+```bash
+# GobjServer serves at localhost:8080
+# RethinkDB Web UI serves at localhost:8000
+docker-compose up -d
 ```
 ## Contributing
 

@@ -3,8 +3,8 @@ package db
 import (
 	"log"
 
-	"github.com/gobjserver/gobjserver/constant"
 	"github.com/gobjserver/gobjserver/core/entity"
+	"github.com/gobjserver/gobjserver/env"
 	r "gopkg.in/gorethink/gorethink.v4"
 )
 
@@ -16,7 +16,7 @@ type RethinkDB struct {
 // Connect .
 func (db RethinkDB) Connect() *r.Session {
 	session, err := r.Connect(r.ConnectOpts{
-		Address: constant.RethinkHostAddress,
+		Address: env.RethinkHostAddress,
 	})
 	if err != nil {
 		log.Fatalln(err)
@@ -26,7 +26,7 @@ func (db RethinkDB) Connect() *r.Session {
 
 // CreateTable .
 func (db RethinkDB) CreateTable(tableName string) bool {
-	_, err := r.DB(constant.DatabaseName).
+	_, err := r.DB(env.DatabaseName).
 		TableCreate(tableName).
 		RunWrite(db.Session)
 	if err != nil {
@@ -37,7 +37,7 @@ func (db RethinkDB) CreateTable(tableName string) bool {
 
 // GetTableNames .
 func (db RethinkDB) GetTableNames() ([]string, error) {
-	res, err := r.DB(constant.DatabaseName).
+	res, err := r.DB(env.DatabaseName).
 		TableList().
 		Run(db.Session)
 	if err != nil {
@@ -54,7 +54,7 @@ func (db RethinkDB) GetTableNames() ([]string, error) {
 
 // ContainTable .
 func (db RethinkDB) ContainTable(tableName string) bool {
-	res, err := r.DB(constant.DatabaseName).
+	res, err := r.DB(env.DatabaseName).
 		TableList().Contains(tableName).
 		Run(db.Session)
 	if err != nil {
@@ -72,7 +72,7 @@ func (db RethinkDB) ContainTable(tableName string) bool {
 
 // Insert .
 func (db RethinkDB) Insert(tableName string, instance interface{}) (*entity.Object, error) {
-	res, err := r.DB(constant.DatabaseName).
+	res, err := r.DB(env.DatabaseName).
 		Table(tableName).
 		Insert(instance).
 		RunWrite(db.Session)
@@ -86,7 +86,7 @@ func (db RethinkDB) Insert(tableName string, instance interface{}) (*entity.Obje
 
 // Find .
 func (db RethinkDB) Find(tableName string) []*entity.Object {
-	res, err := r.DB(constant.DatabaseName).
+	res, err := r.DB(env.DatabaseName).
 		Table(tableName).
 		Run(db.Session)
 	if err != nil {
@@ -103,7 +103,7 @@ func (db RethinkDB) Find(tableName string) []*entity.Object {
 
 // FindByID .
 func (db RethinkDB) FindByID(tableName string, id string) (*entity.Object, error) {
-	res, err := r.DB(constant.DatabaseName).
+	res, err := r.DB(env.DatabaseName).
 		Table(tableName).
 		Get(id).
 		Run(db.Session)
@@ -121,7 +121,7 @@ func (db RethinkDB) FindByID(tableName string, id string) (*entity.Object, error
 
 // Update .
 func (db RethinkDB) Update(tableName string, id string, instance *entity.Object) (*entity.Object, error) {
-	_, err := r.DB(constant.DatabaseName).
+	_, err := r.DB(env.DatabaseName).
 		Table(tableName).
 		Get(id).
 		Update(instance).
@@ -134,7 +134,7 @@ func (db RethinkDB) Update(tableName string, id string, instance *entity.Object)
 
 // Delete .
 func (db RethinkDB) Delete(tableName string, id string) (bool, error) {
-	_, err := r.DB(constant.DatabaseName).
+	_, err := r.DB(env.DatabaseName).
 		Table(tableName).
 		Get(id).
 		Delete().
